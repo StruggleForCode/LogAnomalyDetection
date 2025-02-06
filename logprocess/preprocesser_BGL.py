@@ -33,8 +33,9 @@ import numpy as np
 import pandas as pd
 from collections import OrderedDict, Counter
 import math
-from pprint import pprint
 from datetime import datetime
+
+from logparser.HLM_Parser import HLM_Parser
 
 from stop_words import StopWords
 
@@ -47,22 +48,20 @@ class Preprocessor:
         self.stop_words = StopWords().STOP_WORDS
 
     def df_transfer(self, df, event_id_map):
-        # 通过将年份字符串重复 df.shape[0] 次，创建一个包含相同年份字符串的列表，列表的长度等于 df 的行数。
-        year = [str(datetime.utcnow().year)] * df.shape[0]
-        timestamps = list(map(lambda a, b, c, d: a + '-' + b + '-' + str(c).rstrip() + ' ' + str(d),
-                              year,
-                              df['Month'],
-                              df['Day'],
-                              df['Time']))
-        df['datetime'] = pd.to_datetime(timestamps, format='%Y-%b-%d.0 %H:%M:%S', errors='coerce')
-        df.dropna(inplace=True)
+        # 解析 `Time` 字段到 datetime 格式
+        df['datetime'] = pd.to_datetime(df['Time'], format='%Y-%m-%d-%H.%M.%S.%f', errors='coerce')
+
+        # 删除无法转换时间的行
+        df.dropna(subset=['datetime'], inplace=True)
+
+        # 仅保留需要的列
         df = df[['datetime', 'EventId']]
-        # df['EventId'] = df['EventId'].apply(lambda e: event_id_map[e] if event_id_map.get(e) else -1)
-        # df['EventId'] = df['EventId'].apply(lambda e: event_id_map.get(e, -1))
-        # 将EventId列的值映射为新的值，如果没有映射到值则使用-1
+
+        # 映射 `EventId`，若未找到则填充 `-1`
         df.loc[:, 'EventId'] = df['EventId'].apply(lambda e: event_id_map.get(e, -1))
-        # 按分钟重新采样日志数据，并应用自定义的采样方法
-        deeplog_df = df.set_index('datetime').resample('1min').apply(self._custom_resampler).reset_index()
+
+        # 进行 10 分钟重采样，并应用自定义的采样方法
+        deeplog_df = df.set_index('datetime').resample('10min').apply(self._custom_resampler).reset_index()
         return deeplog_df
 
     def _custom_resampler(self, array_like):
@@ -162,20 +161,10 @@ class Preprocessor:
                 else:
                     print(f"Warning: Event ID {eid} not found in eventid2template in idf")
 
-        # 确定最长的子列表长度
-        max_len = max(len(sublist) for sublist in idf_matrix)
-
-        # 填充每个子列表，使其长度一致
-        idf_matrix = [sublist + [0] * (max_len - len(sublist)) for sublist in idf_matrix]
-
-        # 转换为 NumPy 数组
-        idf_matrix = np.array(idf_matrix)
-
-        # Counter(idf_matrix[i])：对于 idf_matrix 中的每一行（即每个事件的单词列表），统计每个单词的出现次数。
-        # word_counts 是一个 Counter 对象，它返回每个单词在该事件中的出现频次。
         X_counts = []
-        for i in range(idf_matrix.shape[0]):
-            word_counts = Counter(idf_matrix[i])
+        for row in idf_matrix:  # 直接遍历原始列表（每行是一个子列表）
+            filtered_values = [word for word in row if pd.notna(word)]  # 过滤 NaN
+            word_counts = Counter(filtered_values)  # 统计词频
             X_counts.append(word_counts)
 
         # 将 X_counts 列表转换为一个 DataFrame，每一行代表一个事件，每一列代表一个单词，值表示该单词在该事件中的出现次数。
@@ -292,49 +281,58 @@ if __name__ == "__main__":
     ##########
     # Parser #
     ##########
-    input_dir = '../data/hdfs/'
+    input_dir = '../data/loghub_100k/BGL/'
     output_dir = './results_spell/'
-    recreated_parse_logs = True
-    # "Content" is like the log message - what we want to parse
-    # the following is specific to the syslog, so match to those "columns"
-    # <Month> <Date> <Time> <Level> <Component>(\[<PID>\])?: <Content>
-    # log_format = '<Month> <Day> <Time> <MachineName> <Content>'
-    #log_format = '<Date> <Time> <Pid> <Level> <Component>: <Content>'
-    log_format = '<Month> <Day> <Time> <Level> <Component>(\[<PID>\])?: <Content>'
-    log_main = 'Linux'
-    tau = 0.55
 
-    parser = spell.LogParser(
+    log_file = ['BGL_100k.log']  # The input log file name
+    log_format = '<Label> <Timestamp> <Date> <Node> <Time> <NodeRepeat> <Type> <Component> <Level> <Content>'
+    recreated_parse_logs = True
+    regex = [r"core\.\d+"]
+    st = 0.5  # Similarity threshold
+    depth = 4  # Depth of all leaf nodes
+    tau = 0.57  # Message type threshold (default: 0.5)
+    delimiter_pattern = r"\.|/|_"
+
+    log_main = 'BLG'
+    tau = 0.75
+    parser_HLM_Parser = HLM_Parser.LogParser(
+        log_format=log_format,
         indir=input_dir,
         outdir=output_dir,
-        log_format=log_format,
-        logmain=log_main,
+        rex=regex,
+        depth=depth,
+        st=st,
         tau=tau,
+        delimiter_pattern=delimiter_pattern
     )
 
     # if the we wish, we can recreate the parsed csv's
     if recreated_parse_logs:
-        os.makedirs(output_dir)
-        for log_name in ['Linux_2k.log']:
-            parser.parse(log_name)
+        if not os.path.exists(output_dir):
+            os.makedirs(output_dir)
+        #os.makedirs(output_dir)
+        for log_name in log_file:
+            parser_HLM_Parser.parse(log_name)
 
     ##################
     # Transformation #
     ##################
     # TODO:  read from object, not file i/o again
-    df_train = pd.read_csv(f'{output_dir}/Linux_2k.log_structured.csv')
+    df_train = pd.read_csv(f'{output_dir}/BGL_100k.log_structured.csv')
+    df_train_template = pd.read_csv(f'{output_dir}/BGL_100k.log_templates.csv')
     # df_test_normal = pd.read_csv(f'{output_dir}/syslog.2.updated_structured.csv')
     # df_test_abnormal = pd.read_csv(f'{output_dir}/abnormal_states.log_structured.csv')
 
     print('Number of classes for training = ', df_train['EventId'].unique().shape)
 
     event_id_map = dict()
-    for i, event_id in enumerate(df_train['EventId'].unique(), 1):
+
+    for i, event_id in enumerate(df_train_template['EventId'], 1):
         event_id_map[event_id] = i
 
     # Train Set
     log_train = preprocessor.df_transfer(df_train, event_id_map)
-    preprocessor.file_generator('./results_preprocessor/train', log_train)
+    preprocessor.file_generator('./results_preprocessor_bgl/train', log_train)
 
     # Test Normal Set
     # log_test_normal = preprocessor.df_transfer(df_test_normal, event_id_map)
@@ -349,18 +347,18 @@ if __name__ == "__main__":
     #####################
     eventid2template = {}
     print('Creating event IDs to templates')
-    for eid in tqdm(df_train['EventId'].unique()):
+    for eid in df_train_template['EventId']:
         # 通过 get 获取 event_id_map 中的映射值，如果不存在，返回 -1
         mapped_eid = event_id_map.get(eid, -1)
 
         # 如果映射值不是 -1 且在 df_train 中存在该行，才进行处理
-        if mapped_eid != -1 and mapped_eid in df_train.index:
-            eventid2template[mapped_eid] = preprocessor.normalize_text(
-                df_train.loc[mapped_eid, 'EventTemplate'])
+        if mapped_eid != -1:
+            template = df_train_template.loc[df_train_template['EventId'] == eid, 'EventTemplate'].iloc[0]
+            eventid2template[mapped_eid] = preprocessor.normalize_text(template)
         else:
             print(f"Warning: Event ID {eid} not found in event_id_map or df_train.")
             # eventid2template[mapped_eid] = []  # 或者为其分配一个空值，视你的需求而定
-    preprocessor.dump2json(eventid2template, './results_preprocessor/eventid2template.json')
+    preprocessor.dump2json(eventid2template, './results_preprocessor_bgl/eventid2template.json')
 
     ################
     # Fasttext map #
@@ -368,16 +366,17 @@ if __name__ == "__main__":
     fasttext_processor = FastTextProcessor()
     fasttext_processor.create_template_set(eventid2template)
     template_fasttext_map = fasttext_processor.create_map()
-    preprocessor.dump2json(template_fasttext_map, './results_preprocessor/fasttext_map.json')
+    preprocessor.dump2json(template_fasttext_map, './results_preprocessor_bgl/fasttext_map.json')
+    # template_fasttext_map = pd.read_json(f'./results_preprocessor_bgl/fasttext_map.json')
 
     ###############
     # Word to IDF #
     ###############
     word2idf = preprocessor.create_word2idf(log_train, eventid2template)
-    preprocessor.dump2json(word2idf, './results_preprocessor/word2idf.json')
+    preprocessor.dump2json(word2idf, './results_preprocessor_bgl/word2idf.json')
 
     #############################
     # Event to Semantics Vector #
     #############################
     event2semantic_vec = preprocessor.create_semantic_vec(eventid2template, template_fasttext_map, word2idf)
-    preprocessor.dump2json(event2semantic_vec, './results_preprocessor/event2semantic_vec.json')
+    preprocessor.dump2json(event2semantic_vec, './results_preprocessor_bgl/event2semantic_vec.json')
