@@ -1,0 +1,58 @@
+EventId,EventTemplate,Occurrences
+7fcf9eb5,<*> <*> <*>HTTP<*>status <*> len <*> time <*>.<*>,1017
+c435d426,<*> VM <*> (Lifecycle Event),109
+1680fce6,<*> During sync_power_state the instance has a pending task (spawning). Skip.,43
+8970be39,image <*>dd<*>-<*>c<*>-<*>fbb-<*>c<*>-<*>fbe<*>b<*> at (<*>checking,82
+e8e61b8d,image <*>dd<*>-<*>c<*>-<*>fbb-<*>c<*>-<*>fbe<*>b<*> at (<*>in use on this node <*> local <*> on other nodes sharing this instance storage,82
+181762c5,Active base files /var/lib/nova/instances/_base/a<*>c<*>f<*>c<*>da<*>b<*>c<*>bb<*>ac<*>e<*>,82
+2889f221,Creating event network-vif-plugged e<*>ffd-<*>cd<*>-<*>-bddd-<*>f<*>b<*> for instance b<*>-fe<*>a-<*>b-b<*>cc-<*>e<*>b<*>cd<*>d,1
+984ac4fe,<*> Instance spawned successfully.,22
+388a5747,<*> Took <*>.<*> seconds to <*> the instance on the hypervisor.,43
+d401d8e5,<*> Took <*>.<*> seconds to build instance.,22
+304a219c,Auditing locally available compute resources for node cp-<*>.slowvm<*>.tcloud-pg<*>.utah.cloudlab.us,15
+30743775,Total usable vcpus <*> total allocated vcpus <*>,15
+64506064,Final resource view name cp-<*>.slowvm<*>.tcloud-pg<*>.utah.cloudlab.us phys_ram <*>MB used_ram <*>MB phys_disk <*>GB used_disk <*>GB total_vcpus <*> used_vcpus <*> pci_stats [],15
+2cd466e5,Compute_service record updated for cp-<*>.slowvm<*>.tcloud-pg<*>.utah.cloudlab.us cp-<*>.slowvm<*>.tcloud-pg<*>.utah.cloudlab.us,15
+343d521e,<*> Terminating instance,22
+a3e7c4bd,<*> Instance destroyed successfully.,22
+45f582a8,<*> Deleting instance files <*>,21
+9afccbe8,<*> Deletion of <*>complete,21
+1f737089,<*> Took <*>.<*> seconds to deallocate network for instance.,21
+ef22ecc0,Unknown base file /var/lib/nova/instances/_base/a<*>c<*>f<*>c<*>da<*>b<*>c<*>bb<*>ac<*>e<*>,30
+6d4eba6f,Removable base files /var/lib/nova/instances/_base/a<*>c<*>f<*>c<*>da<*>b<*>c<*>bb<*>ac<*>e<*>,30
+2e06fecb,Removing base or swap file /var/lib/nova/instances/_base/a<*>c<*>f<*>c<*>da<*>b<*>c<*>bb<*>ac<*>e<*>,21
+829a8040,HTTP exception thrown No instances found for any event,21
+c6c568a7,<*> Attempting claim memory <*> MB disk <*> GB vcpus <*> CPU,21
+0d0cd947,<*> Total memory <*> MB used <*>.<*> MB,21
+e2136945,<*> memory limit <*>.<*> MB free <*>.<*> MB,21
+6f0efb14,<*> Total disk <*> GB used <*>.<*> GB,21
+ee514f95,<*> <*> limit not specified defaulting to unlimited,42
+a28140d0,<*> Total vcpu <*> VCPU used <*>.<*> VCPU,21
+b680baa7,<*> Claim successful,21
+96c3a568,<*> Creating image,21
+e93bf823,Creating event network-vif-plugged a<*>c-c<*>e<*>-<*>-a<*>a<*>-d<*>e<*>afd<*> for instance <*>abccce-<*>d<*>f-<*>e<*>-b<*>d<*>-<*>b<*>ab<*>e<*>b<*>,1
+732653ea,Successfully synced instances from host 'cp-<*>.slowvm<*>.tcloud-pg<*>.utah.cloudlab.us'.,2
+6fdecc45,Running instance usage audit for host cp-<*>.slowvm<*>.tcloud-pg<*>.utah.cloudlab.us from <*>-<*>-<*> <*> <*> <*> to <*>-<*>-<*> <*> <*> <*>. <*> instances.,1
+a53ddce3,Creating event network-vif-plugged d<*>ce<*>c<*>a-<*>-<*>c<*>-<*>a<*>a-<*>f<*>e<*>defcb<*> for instance b<*>ef<*>-ba<*>d-<*>ae-bf<*>a-<*>cba<*>a<*>,1
+e6ff7645,Base or swap file too young to remove /var/lib/nova/instances/_base/a<*>c<*>f<*>c<*>da<*>b<*>c<*>bb<*>ac<*>e<*>,9
+b607135c,Creating event network-vif-plugged b<*>c<*>-<*>-<*>e<*>-<*>ba<*>-ec<*>d<*>d<*>d for instance <*>dc<*>-<*>-<*>cc-<*>e-<*>b<*>c<*>dcf,1
+c65b5c9b,Creating event network-vif-plugged <*>cf<*>-<*>-<*>f<*>c-<*>c-<*>ba<*>e<*>f<*> for instance <*>-<*>b-<*>f<*>-<*>-<*>fc<*>b<*>a<*>c,1
+322e1e08,Creating event network-vif-plugged <*>-baff-<*>ad-<*>e<*>-a<*>c<*> for instance <*>e<*>cc<*>f-<*>cb<*>-<*>d<*>-<*>c-f<*>a<*>d<*>f<*>c<*>,1
+fb0239ac,Creating event network-vif-plugged <*>bdba<*>d-dd<*>-<*>c-ab<*>-<*>d<*>c<*>c<*> for instance af<*>f<*>-f<*>d<*>-<*>-b<*>-c<*>c<*>aa<*>,1
+41c623ba,The instance sync for host 'cp-<*>.slowvm<*>.tcloud-pg<*>.utah.cloudlab.us' did not match. Re-created its InstanceList.,5
+e01f477a,Creating event network-vif-plugged <*>dbd<*>a<*>-<*>e-<*>cd<*>-<*>-fa<*>e<*>d<*>dd<*> for instance ae<*>a<*>b<*>d-eec<*>-<*>bb-b<*>a-c<*>d<*>b<*>f,1
+91fe1f1a,Creating event network-vif-plugged <*>df<*>c<*>-a<*>-<*>-aeed-<*>a<*> for instance <*>-<*>f<*>-<*>da<*>-b<*>ee-<*>d<*>cc<*>e<*>,1
+2f71595e,Creating event network-vif-plugged <*>b<*>-<*>-<*>-aa<*>-<*>c<*>b<*>b<*> for instance fecdd<*>a<*>-<*>ca<*>-<*>c<*>-<*>-<*>b<*>f<*>e,1
+015d9570,Creating event network-vif-plugged e<*>bf<*>-ae<*>-<*>e<*>-b<*>d<*>-<*>a<*>b<*>bed for instance <*>a<*>d<*>-<*>b<*>-<*>c<*>-b<*>-<*>a<*>cadf,1
+fb98314f,Creating event network-vif-plugged f<*>e<*>f<*>-<*>f<*>-<*>-<*>abf-<*>df<*>d<*>e<*>b<*> for instance d<*>b<*>eb-<*>d<*>a-<*>aa<*>-ba<*>b-<*>d<*>f<*>f<*>c,1
+d4e92934,Creating event network-vif-plugged <*>a<*>ed-<*>-<*>-<*>e-f<*>ac<*>acc<*>d for instance <*>ea<*>-cbf<*>-<*>f<*>e-<*>fe-<*>fd<*>f<*>,1
+aea1aedd,Creating event network-vif-plugged <*>bb<*>c<*>a<*>-effa-<*>-<*>cf<*>-<*>b<*>a<*>df<*> for instance <*>c<*>b-c<*>b-<*>c<*>-b<*>-<*>afe<*>f<*>ff<*>,1
+191f4d3c,While synchronizing instance power states found <*> instances in the database and <*> instances on the hypervisor.,1
+3a7deba9,Creating event network-vif-plugged <*>c<*>b<*>a-<*>a<*>-<*>d<*>-<*>-<*>c<*>aa<*> for instance bf<*>c<*>d-f<*>-<*>-a<*>e-e<*>da<*>e,1
+83c23c7b,Creating event network-vif-plugged <*>c<*>f-<*>d<*>-<*>-ae<*>b-<*>bca<*>d<*>a<*> for instance be<*>e<*>-<*>cc<*>-<*>f<*>-<*>-<*>c<*>a<*>a<*>bc,1
+ab87ffe0,Creating event network-vif-plugged <*>ba<*>-<*>ef-<*>f<*>-<*>d<*>-d<*>c<*>f<*>cb<*> for instance a<*>cf<*>-<*>bb-<*>-a<*>d-<*>c<*>ac<*>a<*>d,1
+72dc7e0c,Creating event network-vif-plugged a<*>c<*>d-<*>cb-<*>ef<*>-b<*>c<*>-dbc<*>c<*>a<*>bd<*>c for instance d<*>a<*>b-<*>-<*>-bdcc-<*>b<*>d<*>d,1
+0b70ee43,Creating event network-vif-plugged <*>b<*>aca<*>-<*>e-<*>-<*>ff<*>-<*>d<*>ff<*> for instance d<*>b<*>bd<*>-<*>-<*>-<*>-fffdd<*>ea<*>e,1
+56dfa859,Creating event network-vif-plugged b<*>f<*>d-d<*>bd-<*>-b<*>f-<*>e<*>fe<*>c<*>c for instance <*>e<*>a-<*>fe<*>-<*>-<*>b<*>-<*>ac<*>e<*>,1
+6be28a2f,Creating event network-vif-plugged b<*>a<*>d<*>-ce<*>e-<*>ff-bb<*>d-a<*>b<*>f<*>e<*> for instance c<*>f<*>f<*>-<*>c-<*>ea<*>-b<*>e<*>-<*>edfcfbf,1
+6976e917,Creating event network-vif-plugged <*>f<*>af-aae<*>-<*>b<*>-<*>c<*>-a<*>bc<*>c<*>e<*>bb<*> for instance faf<*>ea-cba<*>-<*>e<*>b-<*>f<*>-<*>a<*>bc<*>f,1
