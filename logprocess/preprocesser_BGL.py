@@ -61,7 +61,7 @@ class Preprocessor:
         df.loc[:, 'EventId'] = df['EventId'].apply(lambda e: event_id_map.get(e, -1))
 
         # 进行 10 分钟重采样，并应用自定义的采样方法
-        deeplog_df = df.set_index('datetime').resample('10min').apply(self._custom_resampler).reset_index()
+        deeplog_df = df.set_index('datetime').resample('1min').apply(self._custom_resampler).reset_index()
         return deeplog_df
 
     def _custom_resampler(self, array_like):
@@ -282,7 +282,7 @@ if __name__ == "__main__":
     # Parser #
     ##########
     input_dir = '../data/loghub_100k/BGL/'
-    output_dir = './results_spell/'
+    output_dir = './results_preprocessor_bgl_1min/'
 
     log_file = ['BGL_100k.log']  # The input log file name
     log_format = '<Label> <Timestamp> <Date> <Node> <Time> <NodeRepeat> <Type> <Component> <Level> <Content>'
@@ -332,7 +332,7 @@ if __name__ == "__main__":
 
     # Train Set
     log_train = preprocessor.df_transfer(df_train, event_id_map)
-    preprocessor.file_generator('./results_preprocessor_bgl/train', log_train)
+    preprocessor.file_generator(output_dir + '/train', log_train)
 
     # Test Normal Set
     # log_test_normal = preprocessor.df_transfer(df_test_normal, event_id_map)
@@ -358,7 +358,7 @@ if __name__ == "__main__":
         else:
             print(f"Warning: Event ID {eid} not found in event_id_map or df_train.")
             # eventid2template[mapped_eid] = []  # 或者为其分配一个空值，视你的需求而定
-    preprocessor.dump2json(eventid2template, './results_preprocessor_bgl/eventid2template.json')
+    preprocessor.dump2json(eventid2template, output_dir + '/eventid2template.json')
 
     ################
     # Fasttext map #
@@ -366,17 +366,17 @@ if __name__ == "__main__":
     fasttext_processor = FastTextProcessor()
     fasttext_processor.create_template_set(eventid2template)
     template_fasttext_map = fasttext_processor.create_map()
-    preprocessor.dump2json(template_fasttext_map, './results_preprocessor_bgl/fasttext_map.json')
+    preprocessor.dump2json(template_fasttext_map, output_dir + '/fasttext_map.json')
     # template_fasttext_map = pd.read_json(f'./results_preprocessor_bgl/fasttext_map.json')
 
     ###############
     # Word to IDF #
     ###############
     word2idf = preprocessor.create_word2idf(log_train, eventid2template)
-    preprocessor.dump2json(word2idf, './results_preprocessor_bgl/word2idf.json')
+    preprocessor.dump2json(word2idf, output_dir + '/word2idf.json')
 
     #############################
     # Event to Semantics Vector #
     #############################
     event2semantic_vec = preprocessor.create_semantic_vec(eventid2template, template_fasttext_map, word2idf)
-    preprocessor.dump2json(event2semantic_vec, './results_preprocessor_bgl/event2semantic_vec.json')
+    preprocessor.dump2json(event2semantic_vec, output_dir + '/event2semantic_vec.json')
