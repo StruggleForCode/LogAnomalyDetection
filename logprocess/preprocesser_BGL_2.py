@@ -307,12 +307,12 @@ if __name__ == "__main__":
     )
 
     # if the we wish, we can recreate the parsed csv's
-    if recreated_parse_logs:
-        if not os.path.exists(output_dir):
-            os.makedirs(output_dir)
-        #os.makedirs(output_dir)
-        for log_name in log_file:
-            parser_HLM_Parser.parse(log_name)
+    # if recreated_parse_logs:
+    #     if not os.path.exists(output_dir):
+    #         os.makedirs(output_dir)
+    #     #os.makedirs(output_dir)
+    #     for log_name in log_file:
+    #         parser_HLM_Parser.parse(log_name)
 
     ##################
     # Transformation #
@@ -363,11 +363,11 @@ if __name__ == "__main__":
     ################
     # Fasttext map #
     ################
-    fasttext_processor = FastTextProcessor()
-    fasttext_processor.create_template_set(eventid2template)
-    template_fasttext_map = fasttext_processor.create_map()
-    preprocessor.dump2json(template_fasttext_map, output_dir + '/fasttext_map.json')
-    # template_fasttext_map = pd.read_json(f'./results_preprocessor_bgl/fasttext_map.json')
+    # fasttext_processor = FastTextProcessor()
+    # fasttext_processor.create_template_set(eventid2template)
+    # template_fasttext_map = fasttext_processor.create_map()
+    # preprocessor.dump2json(template_fasttext_map, output_dir + '/fasttext_map.json')
+    template_fasttext_map = pd.read_json(f'./results_preprocessor_bgl/fasttext_map.json')
 
     ###############
     # Word to IDF #
